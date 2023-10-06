@@ -42,14 +42,6 @@
 	},
 
 	"config_prefix": "wgAEF",
-	"config": {
-		"AdvertiseCreationInContentNs": {
-			"value": true
-		},
-		"AdvertiseCreationIfCanExist": {
-			"value": false
-		}
-	},
 
 	"manifest_version": 2
 }

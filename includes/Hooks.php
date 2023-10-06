@@ -74,9 +74,7 @@ class Hooks implements
             return true;
         }
 
-        if ( ( $this->showCreateInContentNs || $this->showCreateIfCanExist ) && !$title->exists() && (
-            ( $this->showCreateIfCanExist && $title->canExist() )
-            || ( $this->showCreateInContentNs && $title->isContentPage() ) ) ) {
+        if ( !$title->exists() && $title->canExist() && $title->isContentPage() ) {
             return true;
         }
 
