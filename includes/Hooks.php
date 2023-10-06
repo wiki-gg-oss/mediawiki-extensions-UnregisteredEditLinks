@@ -48,7 +48,7 @@ class Hooks implements
             }
 
             // Require that the user is an anon
-            if ( $skin->getAuthority()->getUser()->isAnon() ) {
+            if ( $skin->getAuthority()->getUser()->isRegistered() ) {
                 $nsIndex = $title->getNamespace();
                 // Check namespace restrictions
                 if ( isset( $nsProtections[ $nsIndex ] )
