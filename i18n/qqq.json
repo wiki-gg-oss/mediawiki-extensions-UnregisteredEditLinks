@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Alex4401"
+		]
+	},
+    "unregisterededitlinks-desc": "{{desc\n| name = Unregistered Edit Links\n| url = https://mediawiki.org/wiki/Extension:Unregistered_Edit_Links\n}}",
+    "unregistered-edit": "Label of the button shown instead of the \"Edit\" page action, when the viewer is not logged in and the wiki has anonymous editing disabled. It leads to [[Special:CreateAccount]].",
+    "unregistered-create": "Label of the button shown instead of the \"Create\" page action, when the page does not exist but can be created, viewer is not logged in and the wiki has anonymous editing disabled. It leads to [[Special:CreateAccount]].",
+    "accountrequiredtoedit": "Message shown above the [[Special:CreateAccount]] form if the user got there via this extension."
+}
