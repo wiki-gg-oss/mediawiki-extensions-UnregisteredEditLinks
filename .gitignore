@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+._*
+
+# Visual Studio Code
+*.code-workspace
+
+# ESLint
+.eslintcache
+
+# Lock files
+/composer.lock
+/package-lock.json
+
+# Third-party
+/vendor
+/node_modules
