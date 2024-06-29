@@ -5,7 +5,6 @@ use Config;
 use MediaWiki\MainConfigNames;
 use SkinTemplate;
 use SpecialPage;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\RestrictionStore;
 use Title;
 
@@ -17,8 +16,6 @@ class Hooks implements
 
     private Config $config;
     private RestrictionStore $restrictionStore;
-    private bool $showCreateInContentNs;
-    private bool $showCreateIfCanExist;
 
     public function __construct(
         Config $config,
@@ -26,8 +23,6 @@ class Hooks implements
     ) {
         $this->config = $config;
         $this->restrictionStore = $restrictionStore;
-        $this->showCreateInContentNs = $config->get( 'AEFAdvertiseCreationInContentNs' );
-        $this->showCreateIfCanExist = $config->get( 'AEFAdvertiseCreationIfCanExist' );
     }
 
     public function onLoginFormValidErrorMessages( array &$messages ) {
@@ -41,8 +36,8 @@ class Hooks implements
         if ( isset( $links['views'] ) ) {
             $title = $skin->getRelevantTitle();
 
-            $shouldModify = $this->checkCriteria( $title, $links );
-
+            $shouldModify = ( isset( $links['views']['viewsource'] ) && !isset( $links['views']['edit'] ) )
+                || $this->checkTitleCriteria( $title, $links );
             if ( !$shouldModify ) {
                 return;
             }
@@ -69,28 +64,26 @@ class Hooks implements
         }
     }
 
-    private function checkCriteria( Title $title, array &$links ): bool {
-        if ( isset( $links['views']['viewsource'] ) && !isset( $links['views']['edit'] ) ) {
-            return true;
-        }
+    private function checkTitleCriteria( Title $title ): bool {
+        return !$title->exists() && $title->canExist() && $title->isContentPage();
+    }
 
-        if ( !$title->exists() && $title->canExist() && $title->isContentPage() ) {
-            return true;
-        }
-
-        return false;
+    private static function getGatedEditLink( Title $title ) {
+        return SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL( [
+            'warning' => self::MSG_CREATE_ACCOUNT_TO_EDIT,
+            'returnto' => $title->getPrefixedDBKey(),
+            'returntoquery' => 'action=edit'
+        ] );
     }
 
     private static function getActionLink( SkinTemplate $skin, Title $title ): array {
         return [
             'edit' => [
                 'class' => false,
-                'text' => wfMessage( $title->exists() ? 'unregistered-edit' : 'unregistered-create' )->setContext( $skin->getContext() )->text(),
-                'href' => SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL( [
-                    'warning' => self::MSG_CREATE_ACCOUNT_TO_EDIT,
-                    'returnto' => $title->getPrefixedDBKey(),
-                    'returntoquery' => 'action=edit'
-                ] ),
+                'text' => wfMessage( $title->exists() ? 'unregistered-edit' : 'unregistered-create' )
+                    ->setContext( $skin->getContext() )
+                    ->text(),
+                'href' => self::getGatedEditLink( $title ),
                 'primary' => true
             ]
         ];
