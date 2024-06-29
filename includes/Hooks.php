@@ -12,8 +12,6 @@ class Hooks implements
     \MediaWiki\Hook\SkinTemplateNavigation__UniversalHook,
     \MediaWiki\Hook\LoginFormValidErrorMessagesHook
 {
-    public const MSG_CREATE_ACCOUNT_TO_EDIT = 'accountrequiredtoedit';
-
     private Config $config;
     private RestrictionStore $restrictionStore;
 
@@ -26,7 +24,7 @@ class Hooks implements
     }
 
     public function onLoginFormValidErrorMessages( array &$messages ) {
-        $messages[] = self::MSG_CREATE_ACCOUNT_TO_EDIT;
+        $messages[] = UnregisteredEditLinks::MSG_CREATE_ACCOUNT_TO_EDIT;
     }
 
     public function onSkinTemplateNavigation__Universal( $skin, &$links ): void {
@@ -37,7 +35,7 @@ class Hooks implements
             $title = $skin->getRelevantTitle();
 
             $shouldModify = ( isset( $links['views']['viewsource'] ) && !isset( $links['views']['edit'] ) )
-                || $this->checkTitleCriteria( $title, $links );
+                || UnregisteredEditLinks::checkTitleCriteria( $title, $links );
             if ( !$shouldModify ) {
                 return;
             }
@@ -64,18 +62,6 @@ class Hooks implements
         }
     }
 
-    private function checkTitleCriteria( Title $title ): bool {
-        return !$title->exists() && $title->canExist() && $title->isContentPage();
-    }
-
-    private static function getGatedEditLink( Title $title ) {
-        return SpecialPage::getTitleFor( 'CreateAccount' )->getLocalURL( [
-            'warning' => self::MSG_CREATE_ACCOUNT_TO_EDIT,
-            'returnto' => $title->getPrefixedDBKey(),
-            'returntoquery' => 'action=edit'
-        ] );
-    }
-
     private static function getActionLink( SkinTemplate $skin, Title $title ): array {
         return [
             'edit' => [
@@ -83,16 +69,13 @@ class Hooks implements
                 'text' => wfMessage( $title->exists() ? 'unregistered-edit' : 'unregistered-create' )
                     ->setContext( $skin->getContext() )
                     ->text(),
-                'href' => self::getGatedEditLink( $title ),
+                'href' => UnregisteredEditLinks::getGatedEditLink( $title ),
                 'primary' => true
             ]
         ];
     }
 
     private static function doUsersProbablyHaveTheseRights( /*string|array*/ $rights ) {
-        if ( is_array( $rights ) )
-            return empty( $rights ) || ( count( $rights ) === 1 && ( $rights[0] === 'autoconfirmed' || $rights[0] === '' ) );
-        
-        return $rights === '' || $rights === 'autoconfirmed';
+        return UnregisteredEditLinks::doUsersProbablyHaveTheseRights( $rights );
     }
 }
