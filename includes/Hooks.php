@@ -1,12 +1,12 @@
 <?php
 namespace MediaWiki\Extension\UnregisteredEditLinks;
 
-use Config;
+use MediaWiki\Config\Config;
 use MediaWiki\MainConfigNames;
-use SkinTemplate;
-use SpecialPage;
 use MediaWiki\Permissions\RestrictionStore;
-use Title;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Title\Title;
+use SkinTemplate;
 
 class Hooks implements
     \MediaWiki\Hook\SkinTemplateNavigation__UniversalHook,
