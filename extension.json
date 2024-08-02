@@ -1,7 +1,6 @@
 {
 	"name": "Unregistered Edit Links",
-	"version": "2.0.0",
-
+	"version": "2.2.0",
 	"author": [
 		"alex4401"
 	],
@@ -9,39 +8,54 @@
 	"descriptionmsg": "unregisterededitlinks-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
-
 	"requires": {
 		"MediaWiki": ">= 1.41.0",
 		"platform": {
 			"php": ">= 8.1"
 		}
 	},
-
 	"MessagesDirs": {
 		"UnregisteredEditLinks": [
 			"i18n"
 		]
 	},
-
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\UnregisteredEditLinks\\": "includes/"
+		"MediaWiki\\Extension\\UnregisteredEditLinks\\": "src/"
 	},
-	
+	"ServiceWiringFiles": [
+		"src/ServiceWiring.php"
+	],
 	"HookHandlers": {
 		"Main": {
 			"class": "MediaWiki\\Extension\\UnregisteredEditLinks\\Hooks",
 			"services": [
-				"MainConfig",
-				"RestrictionStore"
+				"UnregisteredEditLinks"
 			]
-		}
+		},
+        "VisualEditorHooks": {
+            "class": "MediaWiki\\Extension\\UnregisteredEditLinks\\VisualEditorHooks",
+			"services": [
+				"UnregisteredEditLinks"
+			]
+        }
 	},
 	"Hooks": {
 		"SkinTemplateNavigation::Universal": "Main",
-		"LoginFormValidErrorMessages": "Main"
+		"LoginFormValidErrorMessages": "Main",
+        "VisualEditorBeforeEditor": "VisualEditorHooks"
 	},
-
-	"config_prefix": "wgAEF",
-
+	"config": {
+		"ForceVe": {
+			"value": false
+		},
+		"Groups": {
+			"value": [
+				"user",
+				"autoconfirmed",
+				"emailconfirmed"
+			]
+		}
+	},
+	"config_prefix": "wgUnregisteredEditLinks",
 	"manifest_version": 2
 }
