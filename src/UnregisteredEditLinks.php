@@ -63,7 +63,7 @@ final class UnregisteredEditLinks {
     }
 
     public function canUserEditAnything( Authority $authority ): bool {
-        return $authority->isRegistered();
+        return $this->groupPermissionsLookup->groupHasPermission( '*', 'edit' ) || $authority->isRegistered();
     }
 
     public function getGatedEditLink( Title $title ) {
