@@ -53,13 +53,13 @@ final class UnregisteredEditLinks {
                     $right = 'editsemiprotected';
                 }
 
-                if ( $this->groupPermissionsLookup->groupHasPermission( $group, $right ) ) {
-                    return true;
+                if ( !$this->groupPermissionsLookup->groupHasPermission( $group, $right ) ) {
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
     }
 
     public function canUserEditAnything( Authority $authority ): bool {
