@@ -1,17 +1,13 @@
 <?php
 namespace MediaWiki\Extension\UnregisteredEditLinks;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Permissions\GroupPermissionsLookup;
 use MediaWiki\Permissions\RestrictionStore;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
-use MediaWiki\User\User;
-use SkinTemplate;
 
 final class UnregisteredEditLinks {
     public const SERVICE_NAME = 'UnregisteredEditLinks';
