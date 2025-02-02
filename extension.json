@@ -2,9 +2,10 @@
 	"name": "Unregistered Edit Links",
 	"version": "2.2.1",
 	"author": [
-		"alex4401"
+		"wiki.gg development",
+		"alex4401 <alex@wiki.gg>"
 	],
-	"url": "https://github.com/alex4401/mediawiki-extensions-UnregisteredEditLinks",
+	"url": "https://github.com/wiki-gg-oss/mediawiki-extensions-UnregisteredEditLinks",
 	"descriptionmsg": "unregisterededitlinks-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
