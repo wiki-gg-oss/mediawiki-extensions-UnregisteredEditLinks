@@ -31,31 +31,40 @@ final class UnregisteredEditLinks {
     }
 
     public function checkTitle( Title $title ): bool {
-        if ( !( $title->canExist() && $title->isContentPage() ) ) {
+        if ( !$title->canExist() || !$title->isContentPage() ) {
             return false;
         }
 
-        $rights = [
+        // We have to check whether any of the opted-in groups has all of these rights
+        $rights = array_unique( [
             // Namespace protection
             $this->options->get( MainConfigNames::NamespaceProtection )[ $title->getNamespace() ] ?? 'edit',
             // Page protection
             ...$this->restrictionStore->getRestrictions( $title, 'edit' ),
-        ];
+        ] );
 
         foreach ( $this->options->get( 'UnregisteredEditLinksGroups' ) as $group ) {
+            $isOk = true;
             foreach ( $rights as $right ) {
                 // Normalise the right (autoconfirmed is deprecated)
                 if ( $right === 'autoconfirmed' ) {
                     $right = 'editsemiprotected';
                 }
 
-                if ( !$this->groupPermissionsLookup->groupHasPermission( $group, $right ) ) {
-                    return false;
+                // Bail from this loop if this check fails
+                $isOk = $isOk && $this->groupPermissionsLookup->groupHasPermission( $group, $right );
+                if ( !$isOk ) {
+                    break;
                 }
+            }
+
+            // This group has all the rights, allow it
+            if ( $isOk ) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     public function canUserEditAnything( Authority $authority ): bool {
